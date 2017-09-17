@@ -68,7 +68,6 @@ function lsw.init(self, apiKey)
     local s, l = lswRest:delete(
       '/v1/bareMetals/' .. id .. '/leases',
       client.apiKey)
-    print(s)
     if s == 200 then return true end
     return nil
   end
