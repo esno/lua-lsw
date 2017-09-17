@@ -64,6 +64,15 @@ function lsw.init(self, apiKey)
     return sw.switchPort
   end
 
+  client.rmLeases = function(id)
+    local s, l = lswRest:delete(
+      '/v1/bareMetals/' .. id .. '/leases',
+      client.apiKey)
+    print(s)
+    if s == 200 then return true end
+    return nil
+  end
+
   client.setLease = function(id, bootFile)
     local s = lswRest:post(
       '/v1/bareMetals/' .. id .. '/leases',

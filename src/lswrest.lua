@@ -61,4 +61,15 @@ function rest.post(self, url, apiKey, request)
   return nil
 end
 
+function rest.delete(self, url, apiKey)
+  local resp, respStatus, respHeader = https.request{
+    method = 'DELETE',
+    headers = {
+      ['x-lsw-auth'] = apiKey
+    },
+    url = rest.api .. url
+  }
+  return respStatus
+end
+
 return rest

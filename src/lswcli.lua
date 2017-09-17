@@ -137,6 +137,16 @@ function client.rescue(self)
   os.exit(1)
 end
 
+function client.rmleases(self)
+  if arg[2] then
+    if not client.lsw.rmLeases(arg[2]) then
+      os.exit(1)
+    end
+  else
+    os.exit(1)
+  end
+end
+
 function client.run(self)
   package.path = package.path .. ';' .. client.configPath .. '/?.lua'
   client:readConfig()
@@ -148,6 +158,7 @@ function client.run(self)
   if arg[1] == 'password' then client:password() end
   if arg[1] == 'reboot' then client:reboot() end
   if arg[1] == 'rescue' then client:rescue() end
+  if arg[1] == 'rmleases' then client:rmleases() end
   if arg[1] == 'show' then client:show() end
 end
 
