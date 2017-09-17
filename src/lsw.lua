@@ -7,6 +7,20 @@ function lsw.init(self, apiKey)
     apiKey = apiKey
   }
 
+  client.getIp = function(id)
+    local s, i = lswRest:get(
+      '/v1/bareMetals/' .. id .. '/ips',
+      client.apiKey)
+    return i.ips
+  end
+
+  client.getLeases = function(id)
+    local s, l = lswRest:get(
+      '/v1/bareMetals/' .. id .. '/leases',
+      client.apiKey)
+    return l.leases
+  end
+
   client.getMetals = function()
     local s, bareMetals = lswRest:get('/v1/bareMetals', client.apiKey)
     if s == 200 then
@@ -34,6 +48,20 @@ function lsw.init(self, apiKey)
       '/v1/bareMetals/' .. id .. '/rootPassword',
       client.apiKey)
     return p
+  end
+
+  client.getPowerState = function(id)
+    local s, p = lswRest:get(
+      '/v1/bareMetals/' .. id .. '/powerStatus',
+      client.apiKey)
+    return p.powerStatus
+  end
+
+  client.getSwitchState = function(id)
+    local s, sw = lswRest:get(
+      '/v1/bareMetals/' .. id .. '/switchPort',
+      client.apiKey)
+    return sw.switchPort
   end
 
   client.setLease = function(id, bootFile)
