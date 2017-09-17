@@ -92,15 +92,17 @@ function client.show(self)
     end
 
     local leases = client.lsw.getLeases(metal.bareMetalId)
-    print()
-    print('   - leases')
-    for _, v in pairs(leases or {}) do
+    if next(leases or {}) then
       print()
-      print("     ip:\t" .. v.ip)
-      print("     mac:\t" .. v.mac)
-      print('     - options')
-      for _, o in pairs(v.options or {}) do
-        print('       ' .. o.name .. ': ' .. o.value)
+      print('   - leases')
+      for _, v in pairs(leases or {}) do
+        print()
+        print("     ip:\t" .. v.ip)
+        print("     mac:\t" .. v.mac)
+        print('     - options')
+        for _, o in pairs(v.options or {}) do
+          print('       ' .. o.name .. ': ' .. o.value)
+        end
       end
     end
     print()
