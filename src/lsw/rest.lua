@@ -61,6 +61,34 @@ function rest.post(self, url, apiKey, request)
   return nil
 end
 
+function rest.put(self, url, apiKey, request)
+  local reqBody = nil
+  local headers = {
+    ['x-lsw-auth'] = apiKey
+  }
+  if request then
+    reqBody = _toJson(request)
+    headers['content-type'] = 'application/json'
+    headers['content-length'] = #reqBody
+    reqBody = ltn12.source.string(reqBody)
+  end
+  local respBody = {}
+  local resp, respStatus, respHeader = https.request{
+    method = 'PUT',
+    headers = headers,
+    source = reqBody,
+    sink = ltn12.sink.table(respBody),
+    url = rest.api .. url
+  }
+  if respHeader['content-type']:match('application/json') then
+    return respStatus, _toTable(respBody[1])
+  else
+    print(respBody[1])
+  end
+  return nil
+end
+
+
 function rest.delete(self, url, apiKey)
   local resp, respStatus, respHeader = https.request{
     method = 'DELETE',
