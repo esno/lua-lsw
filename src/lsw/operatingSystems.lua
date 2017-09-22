@@ -11,7 +11,20 @@ function module.init(self, apiKey)
       apiKey)
 
     if s == 200 then
-      return r['operatingSystems']
+      local result = {}
+      for _, v in pairs(r['operatingSystems'] or {}) do
+        v.listControlPanels = function()
+          return os.listControlPanels(v['id'])
+        end
+        v.retrieveControlPanel = function(id)
+          return os.retrieveControlPanel(v['id'], id)
+        end
+        v.retrievePartitionSchema = function(id)
+          return os.retrievePartitionSchema(v['id'], id)
+        end
+        table.insert(result, v)
+      end
+      return result
     end
     return nil
   end
@@ -22,7 +35,17 @@ function module.init(self, apiKey)
       apiKey)
 
     if s == 200 then
-      return o['operatingSystem']
+      local result = o['operatingSystem']
+      result.listControlPanels = function()
+        return os.listControlPanels(result['id'])
+      end
+      result.retrieveControlPanel = function(id)
+        return os.retrieveControlPanel(result['id'], id)
+      end
+      result.retrievePartitionSchema = function(id)
+        return os.retrievePartitionSchema(result['id'], id)
+      end
+      return result
     end
     return nil
   end
