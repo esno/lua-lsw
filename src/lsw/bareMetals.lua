@@ -6,6 +6,7 @@ local lswBareMetalIp = require('lsw.bareMetalIp')
 local lswBareMetalNetworkUsage = require('lsw.bareMetalNetworkUsage')
 local lswBareMetalPassword = require('lsw.bareMetalPassword')
 local lswBareMetalInstallation = require('lsw.bareMetalInstallation')
+local lswBareMetalDhcp = require('lsw.bareMetalDhcp')
 
 local module = {}
 
@@ -39,6 +40,7 @@ function module.mkBareMetal(self, instance)
   local nu = lswBareMetalNetworkUsage:init(module.apiKey, instance.bareMetalId)
   local pw = lswBareMetalPassword:init(module.apiKey, instance.bareMetalId)
   local inst = lswBareMetalInstallation:init(module.apiKey, instance.bareMetalId)
+  local dhcp = lswBareMetalDhcp:init(module.apiKey, instance.bareMetalId)
 
   bareMetal.retrieveBareMetal = bm.retrieveBareMetal
   bareMetal.updateBareMetal = bm.updateBareMetal
@@ -61,6 +63,12 @@ function module.mkBareMetal(self, instance)
   bareMetal.retrievePassword = pw.retrievePassword
 
   bareMetal.retrieveInstallationStatus = inst.retrieveInstallationStatus
+
+  bareMetal.listLeases = dhcp.listLeases
+  bareMetal.createLease = dhcp.createLease
+  bareMetal.retrieveLease = dhcp.retrieveLease
+  bareMetal.deleteLease = dhcp.deleteLease
+  bareMetal.deleteLeases = dhcp.deleteLeases
 
   return bareMetal
 end
