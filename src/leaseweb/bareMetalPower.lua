@@ -1,4 +1,4 @@
-local lswRest = require('lsw.rest')
+local lswRest = require('leaseweb.rest')
 
 local module = {}
 

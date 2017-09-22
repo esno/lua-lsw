@@ -1,12 +1,12 @@
-local lswRest = require('lsw.rest')
-local lswBareMetal = require('lsw.bareMetal')
-local lswBareMetalSwitch = require('lsw.bareMetalSwitch')
-local lswBareMetalPower = require('lsw.bareMetalPower')
-local lswBareMetalIp = require('lsw.bareMetalIp')
-local lswBareMetalNetworkUsage = require('lsw.bareMetalNetworkUsage')
-local lswBareMetalPassword = require('lsw.bareMetalPassword')
-local lswBareMetalInstallation = require('lsw.bareMetalInstallation')
-local lswBareMetalDhcp = require('lsw.bareMetalDhcp')
+local lswRest = require('leaseweb.rest')
+local lswBareMetal = require('leaseweb.bareMetal')
+local lswBareMetalSwitch = require('leaseweb.bareMetalSwitch')
+local lswBareMetalPower = require('leaseweb.bareMetalPower')
+local lswBareMetalIp = require('leaseweb.bareMetalIp')
+local lswBareMetalNetworkUsage = require('leaseweb.bareMetalNetworkUsage')
+local lswBareMetalPassword = require('leaseweb.bareMetalPassword')
+local lswBareMetalInstallation = require('leaseweb.bareMetalInstallation')
+local lswBareMetalDhcp = require('leaseweb.bareMetalDhcp')
 
 local module = {}
 
