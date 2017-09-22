@@ -16,7 +16,7 @@ local _toTable = function(s)
   return json.decode(s)
 end
 
-function rest.call(self, url, method, apiKey, header, request)
+function rest.call(self, url, method, apiKey, request,  header)
   local reqBody = nil
   local headers = header or {}
   headers['x-lsw-auth'] = apiKey

@@ -1,0 +1,39 @@
+#!/usr/bin/env lua
+
+local lswCliShell = require('lswcli.shell')
+local lswCliConfig = require('lswcli.config')
+
+local main = {
+  modules = {
+    bareMetal = require('lswcli.bareMetal')
+  }
+}
+
+function main.loop(self)
+  local running = true
+  while running do
+    local cmd = lswCliShell:prompt()
+    if cmd == 'help' then
+      lswCliShell:help(main.modules)
+    elseif cmd == 'exit' or cmd == ':q' then
+      running = false
+    else
+      for _, v in pairs(main.modules or {}) do
+        if cmd == v.cmd then v:run() end
+      end
+    end
+  end
+end
+
+function main.run(self)
+  if not lswCliConfig:readConfig() then
+    local apiKey = lswCliShell:prompt('token')
+    lswCliConfig:writeConfig(apiKey)
+  end
+
+  print('welcome to leaseweb api client. `help` for help')
+  main:loop()
+  os.exit(0)
+end
+
+main:run()
