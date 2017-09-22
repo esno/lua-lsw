@@ -17,6 +17,17 @@ function module.init(self, apiKey, bareMetalId)
     return nil
   end
 
+  power.reboot = function()
+    local s, p = lswRest:post(
+      '/v1/bareMetals/' .. bareMetalId .. '/powerCycle',
+      apiKey)
+
+    if s == 202 then
+      return true
+    end
+    return nil
+  end
+
   return power
 end
 

@@ -41,11 +41,11 @@ function module.mkBareMetal(self, instance)
   bareMetal.openSwitchPort = sp.openSwitchPort
   bareMetal.closeSwitchPort = sp.closeSwitchPort
 
-	bareMetal.retrievePowerStatus = p.retrievePowerStatus
+  bareMetal.retrievePowerStatus = p.retrievePowerStatus
 
-	bareMetal.listIps = ip.listIps
-	bareMetal.retrieveIp = ip.retrieveIp
-	bareMetal.updateIp = ip.updateIp
+  bareMetal.listIps = ip.listIps
+  bareMetal.retrieveIp = ip.retrieveIp
+  bareMetal.updateIp = ip.updateIp
 
   return bareMetal
 end
