@@ -22,7 +22,7 @@ function module.init(self, apiKey, bareMetalId)
       apiKey,
       { reference = reference })
 
-    if s == 204 then
+    if s == 200 then
       return bm['bareMetal']
     end
     return nil
