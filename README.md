@@ -6,6 +6,10 @@ a lua based client for [leaseweb api](http://developer.leaseweb.com/api-docs/)
 
 # binding
 
+## install
+
+  > luarocks install lua-lsw
+
 ## usage
 
     % > lua
@@ -37,6 +41,10 @@ a lua based client for [leaseweb api](http://developer.leaseweb.com/api-docs/)
     retrievePassword
 
 # cli
+
+## install
+
+  > luarocks install lua-lswcli
 
 ## usage
 
