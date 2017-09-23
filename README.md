@@ -53,8 +53,8 @@ a lua based client for [leaseweb api](http://developer.leaseweb.com/api-docs/)
 lsw cli is asking for the api key if config file doesn't exists.
 As soon as you entered the api key it will persisted in `~/.config/lsw/rc.lua`
 
-    token > 689990ad-ca3f-4d35-b299-0c493a86e985
     welcome to leaseweb api client. help for help
+    token > 689990ad-ca3f-4d35-b299-0c493a86e985
     > :q
 
 ### common

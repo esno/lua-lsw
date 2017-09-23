@@ -26,12 +26,12 @@ function main.loop(self)
 end
 
 function main.run(self)
+  print('welcome to ' .. lswCliShell:yellow('leaseweb') .. ' api client. ' .. lswCliShell:white('help') .. ' for help')
   if not lswCliConfig:readConfig() then
     local apiKey = lswCliShell:prompt('token')
     lswCliConfig:writeConfig(apiKey)
   end
 
-  print('welcome to ' .. lswCliShell:yellow('leaseweb') .. ' api client. ' .. lswCliShell:white('help') .. ' for help')
   main:loop()
   os.exit(0)
 end

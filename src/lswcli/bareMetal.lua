@@ -5,7 +5,8 @@ local lswConfig = require('lswcli.config')
 local bareMetal = {
   cmd = 'bareMetal',
   desc = 'manage your bare metal servers',
-  config = lswConfig:readConfig()
+  config = lswConfig:readConfig(),
+  metals = {}
 }
 
 function bareMetal.ls(self)
@@ -46,6 +47,18 @@ function bareMetal.info(self)
     (metal.network.excessIpsPrice or '0') .. ' €)')
 end
 
+function bareMetal.reboot(self)
+  if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
+    print('no server selected')
+    return nil
+  end
+
+  local metal = bareMetal.metals[bareMetal.selected]
+  if not metal.reboot() then
+    print('failed to request reboot')
+  end
+end
+
 function bareMetal.reference(self)
   if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
     print('no server selected')
@@ -56,8 +69,31 @@ function bareMetal.reference(self)
   bareMetal.metals[bareMetal.selected].updateBareMetal(input)
 end
 
+function bareMetal.rescue(self)
+  if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
+    print('no server selected')
+    return nil
+  end
+
+  local metal = bareMetal.metals[bareMetal.selected]
+  local lswRescueImages = require('leaseweb.rescueImages')
+  local os = lswRescueImages:init(bareMetal.config.apiKey).listRescueImages()
+
+  for k, v in pairs(os or {}) do
+    print(k .. ') ' .. v.rescueImage.name)
+  end
+
+  repeat
+    input = tonumber(lswCliShell:prompt('rescue [' .. metal.serverName .. ']'))
+  until os[input]
+
+  if not metal.launchRescueMode(os[input].rescueImage.id) then
+    print('failed to launch rescue mode')
+  end
+end
+
 function bareMetal.select(self)
-  if not bareMetal.metals then
+  if not next(bareMetal.metals) then
     bareMetal.metals = lswBareMetals:init(bareMetal.config.apiKey).listServers()
   end
   for k, v in pairs(bareMetal.metals or {}) do
@@ -70,7 +106,7 @@ function bareMetal.select(self)
 end
 
 function bareMetal.status(self)
-   if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
+  if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
     print('no server selected')
     return nil
   end
@@ -78,6 +114,7 @@ function bareMetal.status(self)
   local power = bareMetal.metals[bareMetal.selected].retrievePowerStatus()
   local switch = bareMetal.metals[bareMetal.selected].retrieveSwitchPortStatus()
   local ips = bareMetal.metals[bareMetal.selected].listIps()
+  local inst = bareMetal.metals[bareMetal.selected].retrieveInstallationStatus()
 
   if power.status == 'on' then
     powerStatus = lswCliShell:green(power.status)
@@ -99,8 +136,15 @@ function bareMetal.status(self)
     else
       nullRouted = lswCliShell:green('routed')
     end
-    print(v.ip .. ":\t\t" .. nullRouted)
+    print(v.ip .. "\t\t" .. nullRouted)
   end
+  if inst.code == 1000 then
+    instCode = lswCliShell:green(inst.code)
+  else
+    instCode = lswCliShell:red(inst.code)
+  end
+  print()
+  print(instCode .. ":\t\t\t" .. inst.description)
 end
 
 local commands = {
@@ -108,8 +152,12 @@ local commands = {
     func = bareMetal.info },
   { cmd = 'ls', desc = 'shows all bareMetal servers',
     func = bareMetal.ls },
+  { cmd = 'reboot', desc = 'reboot server',
+    func = bareMetal.reboot },
   { cmd = 'ref', desc = 'update server reference',
     func = bareMetal.reference },
+  { cmd = 'rescue', desc = 'boot a rescue image',
+    func = bareMetal.rescue },
   { cmd = 'select', desc = 'select a server',
     func = bareMetal.select },
   { cmd = 'status', desc = 'prints information about server status',

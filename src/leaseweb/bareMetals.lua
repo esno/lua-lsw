@@ -7,6 +7,7 @@ local lswBareMetalNetworkUsage = require('leaseweb.bareMetalNetworkUsage')
 local lswBareMetalPassword = require('leaseweb.bareMetalPassword')
 local lswBareMetalInstallation = require('leaseweb.bareMetalInstallation')
 local lswBareMetalDhcp = require('leaseweb.bareMetalDhcp')
+local lswBareMetalRescueMode = require('leaseweb.bareMetalRescueMode')
 
 local module = {}
 
@@ -41,6 +42,7 @@ function module.mkBareMetal(self, instance)
   local pw = lswBareMetalPassword:init(module.apiKey, instance.bareMetalId)
   local inst = lswBareMetalInstallation:init(module.apiKey, instance.bareMetalId)
   local dhcp = lswBareMetalDhcp:init(module.apiKey, instance.bareMetalId)
+  local rm = lswBareMetalRescueMode:init(module.apiKey, instance.bareMetalId)
 
   bareMetal.retrieveBareMetal = bm.retrieveBareMetal
   bareMetal.updateBareMetal = bm.updateBareMetal
@@ -51,6 +53,7 @@ function module.mkBareMetal(self, instance)
 
   bareMetal.retrievePowerStatus = p.retrievePowerStatus
   bareMetal.reboot = p.reboot
+  bareMetal.launchRescueMode = rm.launchRescueMode
 
   bareMetal.listIps = ip.listIps
   bareMetal.retrieveIp = ip.retrieveIp
