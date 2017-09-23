@@ -15,7 +15,7 @@ function bareMetal.ls(self)
   end
 end
 
-function bareMetal.print(self)
+function bareMetal.info(self)
   if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
     print('no server selected')
     return nil
@@ -69,21 +69,57 @@ function bareMetal.select(self)
   bareMetal.selected = input
 end
 
+function bareMetal.status(self)
+   if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
+    print('no server selected')
+    return nil
+  end
+
+  local power = bareMetal.metals[bareMetal.selected].retrievePowerStatus()
+  local switch = bareMetal.metals[bareMetal.selected].retrieveSwitchPortStatus()
+  local ips = bareMetal.metals[bareMetal.selected].listIps()
+
+  if power.status == 'on' then
+    powerStatus = lswCliShell:green(power.status)
+  else
+    powerStatus = lswCliShell:red(power.status)
+  end
+
+  if switch.status == 'open' then
+    switchStatus = lswCliShell:green(switch.status)
+  else
+    switchStatus = lswCliShell:red(switch.status)
+  end
+
+  print("power:\t" .. powerStatus .. "\t\tswitch:\t" .. switchStatus)
+  if next(ips or {}) then print() end
+  for k, v in pairs(ips or {}) do
+    if v.nullRouted then
+      nullRouted = lswCliShell:red('null-routed')
+    else
+      nullRouted = lswCliShell:green('routed')
+    end
+    print(v.ip .. ":\t\t" .. nullRouted)
+  end
+end
+
 local commands = {
+  { cmd = 'info', desc = 'prints detailed information about the selected server',
+    func = bareMetal.info },
   { cmd = 'ls', desc = 'shows all bareMetal servers',
     func = bareMetal.ls },
+  { cmd = 'ref', desc = 'update server reference',
+    func = bareMetal.reference },
   { cmd = 'select', desc = 'select a server',
     func = bareMetal.select },
-  { cmd = 'print', desc = 'prints detailed information about the selected server',
-    func = bareMetal.print },
-  { cmd = 'reference', desc = 'update server reference',
-    func = bareMetal.reference }
+  { cmd = 'status', desc = 'prints information about server status',
+    func = bareMetal.status }
 }
 
 function bareMetal.run(self)
   local running = true
   while running do
-    if bareMetal.selected then postfix = '/' .. bareMetal.metals[bareMetal.selected].serverName end
+    if bareMetal.selected then postfix = ' [' .. bareMetal.metals[bareMetal.selected].serverName .. ']' end
     local cmd = lswCliShell:prompt(bareMetal.cmd .. (postfix or ''))
     if cmd == 'help' then
       lswCliShell:help(commands)

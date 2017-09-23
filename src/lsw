@@ -31,7 +31,7 @@ function main.run(self)
     lswCliConfig:writeConfig(apiKey)
   end
 
-  print('welcome to leaseweb api client. `help` for help')
+  print('welcome to ' .. lswCliShell:yellow('leaseweb') .. ' api client. ' .. lswCliShell:white('help') .. ' for help')
   main:loop()
   os.exit(0)
 end
