@@ -47,6 +47,21 @@ function bareMetal.info(self)
     (metal.network.excessIpsPrice or '0') .. ' €)')
 end
 
+function bareMetal.passwd(self)
+  if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
+    print('no server selected')
+    return nil
+  end
+
+  local metal = bareMetal.metals[bareMetal.selected]
+  local password = metal.retrievePassword()
+
+  if password then
+    print('root:\t' .. password.rootPassword)
+    print('rescue:\t' .. password.rescueModePassword)
+  end
+end
+
 function bareMetal.reboot(self)
   if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
     print('no server selected')
@@ -59,7 +74,7 @@ function bareMetal.reboot(self)
   end
 end
 
-function bareMetal.reference(self)
+function bareMetal.ref(self)
   if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
     print('no server selected')
     return nil
@@ -152,10 +167,12 @@ local commands = {
     func = bareMetal.info },
   { cmd = 'ls', desc = 'shows all bareMetal servers',
     func = bareMetal.ls },
+  { cmd = 'passwd', desc = 'fetch server passwords',
+    func = bareMetal.passwd },
   { cmd = 'reboot', desc = 'reboot server',
     func = bareMetal.reboot },
   { cmd = 'ref', desc = 'update server reference',
-    func = bareMetal.reference },
+    func = bareMetal.ref },
   { cmd = 'rescue', desc = 'boot a rescue image',
     func = bareMetal.rescue },
   { cmd = 'select', desc = 'select a server',
