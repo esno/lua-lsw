@@ -4,109 +4,90 @@ a lua based client for [leaseweb api](http://developer.leaseweb.com/api-docs/)
 
 ![leaseweb](https://www.leaseweb.com/sites/all/themes/leaseweb/logo.svg "leaseweb")
 
-# usage
+# binding
 
-    lswcli.lua <module> [<bareMetalId>] [<args>]
+## usage
 
-    MODULES:
-      lease     <bareMetalId> 'http://files.example.org/boot-this.ipxe'
-      list
-      password  <bareMetalId>
-      reboot    <bareMetalId>
-      rescue    <bareMetalId>
-      rmleases  <bareMetalId>
-      show      <bareMetalId>
+    % > lua
+    Lua 5.1.5  Copyright (C) 1994-2012 Lua.org, PUC-Rio
+    >
+    > lswMetals = require('leaseweb.bareMetals')
+    > metals = lswMetals:init('<api-key>').listServers()
+    >
+    > for k, v in pairs(metals[1]) do if type(v) == 'function' then print(k) end end
+    retrieveSwitchPortStatus
+    retrieveBareMetal
+    closeSwitchPort
+    updateIp
+    retrieveLease
+    retrieveBandwidthUsage
+    deleteLeases
+    retrievePowerStatus
+    retrieveDataTrafficUsage
+    listIps
+    updateBareMetal
+    listLeases
+    retrieveIp
+    openSwitchPort
+    reboot
+    deleteLease
+    retrieveInstallationStatus
+    retrieveNetworkUsage
+    createLease
+    retrievePassword
 
-# examples
+# cli
 
-## list all servers
+## usage
 
-    > lswcli.lua list
-    >> baremetal
-       - location:  AMS-01
-         - name/id: ROFL001 / 123456
-           hw:      Hp DL180 G5 / Intel Quad-Core Xeon L5410 (2x4@2330 Mhz)
-                    32GB ram / 4x300 GB SAS  disks
-         - name/id: ROFL002 / 234567
-           hw:      Hp DL120 G6 / Intel Quad-Core Xeon X3440 (1x4@2530 Mhz)
-                    16GB ram / 4x1 TB SATA  disks
+### authentication
 
-## create a lease to boot special ipxe instructions
+lsw cli is asking for the api key if config file doesn't exists.
+As soon as you entered the api key it will persisted in `~/.config/lsw/rc.lua`
 
-    > lswcli.lua lease 234567 'http://ipxe.example.org/ubuntu-install.ipxe'
+    token > 689990ad-ca3f-4d35-b299-0c493a86e985
+    welcome to leaseweb api client. help for help
+    > :q
 
-## show server information
+### common
 
-    > lswcli.lua show 234567
-    >> Hp DL120 G6 (ROFL002 / 234567)
+    % > lsw
+    welcome to leaseweb api client. help for help
+    > help
+    the following commands are available
+        bareMetal               manage your bare metal servers
+    > bareMetal
+    bareMetal > help
+    the following commands are available
+        info            prints detailed information about the selected server
+        ls              shows all bareMetal servers
+        ref             update server reference
+        select          select a server
+        status          prints information about server status
+    bareMetal > ls
+    123456  ROFL001/Bare Metal      rofl1.example.org
+    234567  ROFL002/Bare Metal      rofl2.example.org
+    bareMetal > status
+    no server selected
+    bareMetal > select
+    1) ROFL001 / rofl1.example.org
+    2) ROFL002 / rofl2.example.org
+    select > 1
+    bareMetal [ROFL001] > status
+    power:  on              switch: open
 
-       - contract
-         sla:       Basic - 24x7x24
-         price:     11.81
-         start:     Oct 1, 2017
-         end:       -
-         term:      1 month(s)
+    a.b.c.d:                routed
+    b.c.d.e:                routed
+    c.d.e.f:                routed
+    ::1:                    routed
+    bareMetal [ROFL001] > select 
+    1) ROFL001 / rofl1.example.org
+    2) ROFL002 / rofl2.example.org
+    select > 2
+    bareMetal [ROFL002] > status
+    power:  on              switch: open
 
-       - hardware
-         cpu:       1x4 @ 2530 Mhz (Intel Quad-Core Xeon X3440)
-         ram:       16GB
-         disks:     4x1 TB SATA 
-         mac:
-           - DE:AD:BE:AF:00:01
-           - DE:AD:BE:AF:00:02
-           - DE:AD:BE:AF:00:03
-         switch:    1 / open
-         power:     on
-
-       - ipmi
-         ip:        a.b.c.d
-         netmask:   255.255.255.x
-         gateway:   a.b.c.d
-
-       - ip
-
-         ip:        a.b.c.d
-         gateway:   a.b.c.d
-         netmask:   255.255.255.x
-         ptr:       reverse.example.org
-         nullroute: disabled
-
-         ip:        a.b.c.d
-         gateway:   a.b.c.d
-         netmask:   255.255.255.x
-         ptr:       -
-         nullroute: enabled
-
-       - leases
-
-         ip:        a.b.c.d
-         mac:       DE:AD:BE:AF:00:01
-         - options
-           Bootfile Name: undionly.kpxe
-           DNS Servers: a.b.c.d
-           Boot Server Host Name: a.b.c.d
-           Bootfile Name: http://ipxe.example.org/ubuntu-install.ipxe
-
-## remove all leases
-
-    > lswcli.lua rmleases 234567
-
-## reboot server
-
-    > lswcli.lua reboot 234567
-
-## enable rescue system
-
-    > lswcli.lua rescue 234567
-    >> available images
-       1) FreeBSD Rescue Image (amd64)
-       2) GRML Linux Rescue Image (amd64)
-
-       > choose an image: 2
-
-## show server passwords
-
-    > lswcli.lua password 123456
-    >> passwords
-       default:     my_passw0rd!
-       rescue:      my_passw0rd!
+    d.e.f.g:                routed
+    e.f.g.h:                routed
+    bareMetal [ROFL002] > exit
+    > exit
