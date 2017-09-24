@@ -1,6 +1,11 @@
 local lswRest = require('leaseweb.rest')
 
-local module = {}
+local module = {
+  status = {
+    _NORMAL = 'Normal',
+    _RESCUE = 'Reboot to rescue mode'
+  }
+}
 
 function module.init(self, apiKey, bareMetalId)
   module.apiKey = apiKey

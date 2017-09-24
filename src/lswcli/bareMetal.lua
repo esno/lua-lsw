@@ -1,6 +1,8 @@
 local lswCliShell = require('lswcli.shell')
 local lswBareMetals = require('leaseweb.bareMetals')
 local lswConfig = require('lswcli.config')
+local lswInstallation = require('leaseweb.bareMetalInstallation')
+local posix = require('posix')
 
 local bareMetal = {
   cmd = 'bareMetal',
@@ -104,6 +106,16 @@ function bareMetal.rescue(self)
 
   if not metal.launchRescueMode(os[input].rescueImage.id) then
     print('failed to launch rescue mode')
+  else
+    print('initializing rescue mode...')
+    repeat
+      if status then
+        posix.sleep(60)
+      end
+      local status = metal.retrieveInstallationStatus()
+    until status.description == lswInstallation.status._NORMAL
+    local password = metal.retrievePassword()
+    print('rescue password is ' .. lswCliShell:white(password.rescueModePassword))
   end
 end
 
