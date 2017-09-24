@@ -1,3 +1,4 @@
+local os = require('os')
 local lswCliShell = require('lswcli.shell')
 local lswBareMetals = require('leaseweb.bareMetals')
 local lswConfig = require('lswcli.config')
@@ -94,19 +95,25 @@ function bareMetal.rescue(self)
 
   local metal = bareMetal.metals[bareMetal.selected]
   local lswRescueImages = require('leaseweb.rescueImages')
-  local os = lswRescueImages:init(bareMetal.config.apiKey).listRescueImages()
+  local OS = lswRescueImages:init(bareMetal.config.apiKey).listRescueImages()
 
-  for k, v in pairs(os or {}) do
+  for k, v in pairs(OS or {}) do
     print(k .. ') ' .. v.rescueImage.name)
   end
 
   repeat
     input = tonumber(lswCliShell:prompt('rescue [' .. metal.serverName .. ']'))
-  until os[input]
+  until OS[input]
 
-  if not metal.launchRescueMode(os[input].rescueImage.id) then
-    print('failed to launch rescue mode')
+  if not metal.launchRescueMode(OS[input].rescueImage.id) then
+    local status = metal.retrieveInstallationStatus()
+    if status.description == lswInstallation.status._RESCUE then
+      print('rescue mode already initializing. please wait')
+    else
+      print('failed to launch rescue mode')
+    end
   else
+    local startTime = os.time()
     print('initializing rescue mode...')
     repeat
       if status then
@@ -114,8 +121,12 @@ function bareMetal.rescue(self)
       end
       local status = metal.retrieveInstallationStatus()
     until status.description == lswInstallation.status._NORMAL
-    local password = metal.retrievePassword()
-    print('rescue password is ' .. lswCliShell:white(password.rescueModePassword))
+    local endTime = os.time()
+    print('rescue mode initialized after ' .. (endTime - startTime) .. ' seconds')
+    repeat
+      input = lswCliShell:prompt('ssh (y/n)')
+    until input == 'y' or input == 'n'
+    if input == 'y' then bareMetal.ssh() end
   end
 end
 
@@ -130,6 +141,26 @@ function bareMetal.select(self)
   	input = tonumber(lswCliShell:prompt('select'))
   until bareMetal.metals[input]
   bareMetal.selected = input
+end
+
+function bareMetal.ssh(self)
+  if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
+    print('no server selected')
+    return nil
+  end
+
+  local metal = bareMetal.metals[bareMetal.selected]
+  local ips = metal.listIps()
+  local password = metal.retrievePassword().rescueModePassword
+
+  local sshCmd = "sshpass -p '" .. password ..
+    "' ssh root@" .. ips[1].ip ..
+    ' -o StrictHostKeyChecking=no' ..
+    ' -o UserKnownHostsFile=/dev/null' ..
+    ' -o PasswordAuthentication=yes'
+
+  print('WARNING: host key checking is disabled!')
+  os.execute(sshCmd)
 end
 
 function bareMetal.status(self)
@@ -189,6 +220,8 @@ local commands = {
     func = bareMetal.rescue },
   { cmd = 'select', desc = 'select a server',
     func = bareMetal.select },
+  { cmd = 'ssh', desc = 'open remote shell',
+    func = bareMetal.ssh },
   { cmd = 'status', desc = 'prints information about server status',
     func = bareMetal.status }
 }
