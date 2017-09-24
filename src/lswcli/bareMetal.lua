@@ -12,13 +12,6 @@ local bareMetal = {
   metals = {}
 }
 
-function bareMetal.ls(self)
-  bareMetal.metals = lswBareMetals:init(bareMetal.config.apiKey).listServers()
-  for _, v in pairs(bareMetal.metals or {}) do
-    print(v.bareMetalId .. "\t" .. v.serverName .. '/' .. v.serverType .. "\t" .. (v.reference or "-"))
-  end
-end
-
 function bareMetal.info(self)
   if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
     print('no server selected')
@@ -48,6 +41,28 @@ function bareMetal.info(self)
   print("\t\t" .. metal.serviceLevelAgreement.sla)
   print("\t\t" .. metal.serverHostingPack.serverPrice .. ' € (' .. (metal.network.ipsAssigned - metal.network.ipsFreeOfCharge) .. 'x' ..
     (metal.network.excessIpsPrice or '0') .. ' €)')
+end
+
+function bareMetal.ips(self)
+  if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
+    print('no server selected')
+    return nil
+  end
+
+  local metal = bareMetal.metals[bareMetal.selected]
+  local ips = metal.listIps()
+
+  print("ip\t\tgw\t\tnetmask")
+  for k, v in pairs(ips or {}) do
+    print(v.ip .. "\t" .. v.ipDetails.gateway .. "\t" .. v.ipDetails.mask)
+  end
+end
+
+function bareMetal.ls(self)
+  bareMetal.metals = lswBareMetals:init(bareMetal.config.apiKey).listServers()
+  for _, v in pairs(bareMetal.metals or {}) do
+    print(v.bareMetalId .. "\t" .. v.serverName .. '/' .. v.serverType .. "\t" .. (v.reference or "-"))
+  end
 end
 
 function bareMetal.passwd(self)
@@ -208,6 +223,8 @@ end
 local commands = {
   { cmd = 'info', desc = 'prints detailed information about the selected server',
     func = bareMetal.info },
+  { cmd = 'ips', desc = 'shows ip address information',
+    func = bareMetal.ips },
   { cmd = 'ls', desc = 'shows all bareMetal servers',
     func = bareMetal.ls },
   { cmd = 'passwd', desc = 'fetch server passwords',
