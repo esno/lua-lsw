@@ -145,6 +145,18 @@ function bareMetal.rescue(self)
   end
 end
 
+function bareMetal.rmleases(self)
+  if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
+    print('no server selected')
+    return nil
+  end
+
+  if not bareMetal.metals[bareMetal.selected].deleteLeases() then
+    print('cannot delete leases')
+    return nil
+  end
+end
+
 function bareMetal.select(self)
   if not next(bareMetal.metals) then
     bareMetal.metals = lswBareMetals:init(bareMetal.config.apiKey).listServers()
@@ -235,6 +247,8 @@ local commands = {
     func = bareMetal.ref },
   { cmd = 'rescue', desc = 'boot a rescue image',
     func = bareMetal.rescue },
+  { cmd = 'rmleases', desc = 'delete all dhcp leases',
+    func = bareMetal.rmleases },
   { cmd = 'select', desc = 'select a server',
     func = bareMetal.select },
   { cmd = 'ssh', desc = 'open remote shell',
