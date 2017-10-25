@@ -13,9 +13,8 @@ source = {
 }
 
 dependencies = {
-  "lua-lsw >= 0.1.1",
+  "lua-lsw >= 0.1.0",
   "luafilesystem",
-  "luaposix",
 }
 
 build = {
