@@ -58,6 +58,21 @@ function bareMetal.ips(self)
   end
 end
 
+function bareMetal.leases(self)
+  if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
+    print('no server selected')
+    return nil
+  end
+  local metal = bareMetal.metals[bareMetal.selected]
+  local leases = metal.listLeases()
+  for _, v in pairs(leases or {}) do
+    print(v.ip .. "\t" .. v.mac)
+    for _, l in pairs(v.options or {}) do
+      print(' ' .. l.name .. ': ' .. l.value)
+    end
+  end
+end
+
 function bareMetal.ls(self)
   bareMetal.metals = lswBareMetals:init(bareMetal.config.apiKey).listServers()
   for _, v in pairs(bareMetal.metals or {}) do
@@ -237,6 +252,8 @@ local commands = {
     func = bareMetal.info },
   { cmd = 'ips', desc = 'shows ip address information',
     func = bareMetal.ips },
+  { cmd = 'leases', desc = 'shows all dhcp leases',
+    func = bareMetal.leases },
   { cmd = 'ls', desc = 'shows all bareMetal servers',
     func = bareMetal.ls },
   { cmd = 'passwd', desc = 'fetch server passwords',
