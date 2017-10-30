@@ -34,7 +34,7 @@ function module.init(self, apiKey, bareMetalId)
         domainNameServerIp = domainNameServerIp
       })
 
-    if s == 204 then
+    if s == 201 then
       return true
     end
     return nil

@@ -80,6 +80,26 @@ function bareMetal.ls(self)
   end
 end
 
+function bareMetal.mklease(self)
+  if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
+    print('no server selected')
+    return nil
+  end
+
+  local bootFile = lswCliShell:prompt('bootfile: ')
+  local bootServer = lswCliShell:prompt('server: ')
+  local bootDns = lswCliShell:prompt('dns: ')
+  if bootFile == '' then bootFile = nil end
+  if bootServer == '' then bootServer = nil end
+  if bootDns == '' then bootDns = nil end
+
+  local metal = bareMetal.metals[bareMetal.selected]
+  if not metal.createLease(bootFile, bootServer, bootDns) then
+    print('cannot create lease')
+  end
+  return nil
+end
+
 function bareMetal.passwd(self)
   if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
     print('no server selected')
@@ -256,6 +276,8 @@ local commands = {
     func = bareMetal.leases },
   { cmd = 'ls', desc = 'shows all bareMetal servers',
     func = bareMetal.ls },
+  { cmd = 'mklease', desc = 'create a dhcp leases',
+    func = bareMetal.mklease },
   { cmd = 'passwd', desc = 'fetch server passwords',
     func = bareMetal.passwd },
   { cmd = 'reboot', desc = 'reboot server',
