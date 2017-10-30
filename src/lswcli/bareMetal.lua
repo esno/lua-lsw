@@ -54,7 +54,7 @@ function bareMetal.ips(self)
 
   print("ip\t\tgw\t\tnetmask")
   for k, v in pairs(ips or {}) do
-    print(v.ip .. "\t" .. v.ipDetails.gateway .. "\t" .. v.ipDetails.mask)
+    print(v.ip .. "\t" .. v.ipDetails.gateway .. "\t" .. v.ipDetails.mask .. "\t" .. v.reverseLookup)
   end
 end
 
@@ -135,6 +135,29 @@ function bareMetal.ref(self)
 
   local input = lswCliShell:prompt('reference')
   bareMetal.metals[bareMetal.selected].updateBareMetal(input)
+end
+
+function bareMetal.rdns(self)
+  if not bareMetal.selected and not bareMetal.metals[bareMetal.selected] then
+    print('no server selected')
+    return nil
+  end
+
+  local metal = bareMetal.metals[bareMetal.selected]
+  local ips = metal.listIps()
+
+  for k, v in pairs(ips or {}) do
+    print(k .. ') ' .. v.ip)
+  end
+
+  repeat
+    ip = tonumber(lswCliShell:prompt('select'))
+  until ips[ip]
+  local rdns = lswCliShell:prompt('rdns')
+
+  if not ips[ip].updateIp(rdns, nil) then
+    print('cannot set rdns')
+  end
 end
 
 function bareMetal.rescue(self)
@@ -284,6 +307,8 @@ local commands = {
     func = bareMetal.reboot },
   { cmd = 'ref', desc = 'update server reference',
     func = bareMetal.ref },
+  { cmd = 'rdns', desc = 'update reverse lookup',
+    func = bareMetal.rdns },
   { cmd = 'rescue', desc = 'boot a rescue image',
     func = bareMetal.rescue },
   { cmd = 'rmleases', desc = 'delete all dhcp leases',
