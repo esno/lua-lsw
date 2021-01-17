@@ -2,7 +2,7 @@
 
 a lua based client for [leaseweb api](http://developer.leaseweb.com/api-docs/)
 
-![leaseweb](https://www.leaseweb.com/sites/all/themes/leaseweb/logo.svg "leaseweb")
+![leaseweb](./resources/leaseweb.svg "leaseweb")
 
 # binding
 
