@@ -2,13 +2,13 @@
 
 a lua based client for [leaseweb api](http://developer.leaseweb.com/)
 
-![leaseweb](./resources/leaseweb.svg "leaseweb")
+![leaseweb](./leaseweb.svg "leaseweb")
 
 # binding
 
 ## install
 
-  > luarocks install lua-lsw
+    % > luarocks install lua-lsw
 
 ## usage
 
@@ -44,7 +44,7 @@ a lua based client for [leaseweb api](http://developer.leaseweb.com/)
 
 ## install
 
-  > luarocks install lua-lswcli
+    % > luarocks install lua-lswcli
 
 ## usage
 
