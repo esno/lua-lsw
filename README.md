@@ -2,15 +2,13 @@
 
 a lua based client for [leaseweb api](http://developer.leaseweb.com/)
 
-![leaseweb](./leaseweb.svg "leaseweb")
+## binding
 
-# binding
-
-## install
+### install
 
     % > luarocks install lua-lsw
 
-## usage
+### usage
 
     % > lua
     Lua 5.1.5  Copyright (C) 1994-2012 Lua.org, PUC-Rio
@@ -40,15 +38,15 @@ a lua based client for [leaseweb api](http://developer.leaseweb.com/)
     createLease
     retrievePassword
 
-# cli
+## cli
 
-## install
+### install
 
     % > luarocks install lua-lswcli
 
-## usage
+### usage
 
-### authentication
+#### authentication
 
 lsw cli is asking for the api key if config file doesn't exists.
 As soon as you entered the api key it will persisted in `~/.config/lsw/rc.lua`
@@ -57,7 +55,7 @@ As soon as you entered the api key it will persisted in `~/.config/lsw/rc.lua`
     token > 689990ad-ca3f-4d35-b299-0c493a86e985
     > :q
 
-### common
+#### common
 
     % > lsw
     welcome to leaseweb api client. help for help
