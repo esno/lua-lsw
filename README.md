@@ -1,6 +1,6 @@
 # lua-lsw
 
-a lua based client for [leaseweb api](http://developer.leaseweb.com/api-docs/)
+a lua based client for [leaseweb api](http://developer.leaseweb.com/)
 
 ![leaseweb](./resources/leaseweb.svg "leaseweb")
 
